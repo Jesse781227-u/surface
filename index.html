@@ -1151,7 +1151,7 @@ body{
   var soundOn = false;
   var audioContext = null;
   var awaitingUnmute = false;
-  var interactionEvents = ['scroll', 'pointerdown', 'touchstart', 'click', 'keydown', 'wheel'];
+  var interactionEvents = ['scroll', 'wheel', 'pointerdown', 'pointerup', 'touchstart', 'touchend', 'mousedown', 'mouseup', 'click', 'keydown', 'keyup'];
   var audioEventNames = ['loadstart', 'loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough', 'playing', 'pause', 'waiting', 'stalled', 'suspend', 'abort', 'emptied', 'error'];
 
   function describeAudioError(error){
@@ -1205,11 +1205,6 @@ body{
     })
   });
 
-  function removeUnmuteListeners(){
-    interactionEvents.forEach(function(eventName){
-      document.removeEventListener(eventName, unmuteBirthdayAudio, eventName === 'scroll' || eventName === 'touchstart' || eventName === 'wheel');
-    });
-  }
   function playWithLogging(reason){
     logAudio('info', 'play-attempt', { reason: reason });
     var attempt;
@@ -1230,30 +1225,28 @@ body{
     }
     return attempt;
   }
-  function unmuteBirthdayAudio(){
+  function unmuteBirthdayAudio(eventName){
     if(!awaitingUnmute && !birthdayAudio.paused && !birthdayAudio.muted) return;
-    logAudio('info', 'interaction-unmute', { interaction: 'first-user-interaction' });
+    logAudio('info', 'interaction-start', { interaction: eventName || 'user-interaction' });
     awaitingUnmute = false;
     birthdayAudio.muted = false;
-    var attempt = playWithLogging('first-interaction-unmute');
+    var attempt = playWithLogging('interaction-' + (eventName || 'user-interaction'));
     if(attempt && attempt.catch){
       attempt.then(function(){
         soundOn = true;
-        removeUnmuteListeners();
       }).catch(function(error){
-        logAudio('error', 'audible-play-rejected', { reason: 'first-interaction-unmute', exception: describeAudioError(error) });
+        logAudio('error', 'audible-play-rejected', { reason: 'interaction-' + (eventName || 'user-interaction'), exception: describeAudioError(error) });
         birthdayAudio.muted = true;
         awaitingUnmute = true;
       });
     } else if(attempt) {
       soundOn = true;
-      removeUnmuteListeners();
     }
   }
   interactionEvents.forEach(function(eventName){
-    document.addEventListener(eventName, unmuteBirthdayAudio, {
+    document.addEventListener(eventName, function(){ unmuteBirthdayAudio(eventName); }, {
       passive: true,
-      capture: eventName === 'scroll' || eventName === 'touchstart' || eventName === 'wheel'
+      capture: eventName === 'scroll' || eventName === 'touchstart' || eventName === 'touchend' || eventName === 'wheel'
     });
   });
   function startBirthdayAudio(){
@@ -1262,7 +1255,6 @@ body{
     if(attempt && attempt.catch){
       attempt.then(function(){
         soundOn = true;
-        removeUnmuteListeners();
       }).catch(function(error){
         logAudio('error', 'audible-play-rejected', { reason: 'page-load-audible', exception: describeAudioError(error) });
         birthdayAudio.muted = true;
@@ -1286,7 +1278,6 @@ body{
       });
     } else if(attempt) {
       soundOn = true;
-      removeUnmuteListeners();
     }
   }
   birthdayAudio.addEventListener('play', function(){
