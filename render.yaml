@@ -3,6 +3,6 @@ services:
     name: surface
     runtime: static
     branch: main
-    buildCommand: mkdir -p dist && cp index.html dist/index.html && cp -R audio dist/audio && cp -R assets dist/assets
-    staticPublishPath: dist
+    buildCommand: echo "No build required; serving repository root"
+    staticPublishPath: .
     autoDeploy: true
