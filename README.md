@@ -12,7 +12,7 @@ application as a Render Static Site:
 
 - **Service type:** Static Site
 - **Root Directory:** repository root (`.`)
-- **Build Command:** `mkdir -p dist && cp index.html dist/index.html`
+- **Build Command:** `mkdir -p dist && cp index.html dist/index.html && cp -R audio dist/audio && cp -R assets dist/assets`
 - **Publish Directory:** `dist`
 - **Environment variables:** none required
 
@@ -21,5 +21,6 @@ build` command. This repository intentionally has no `package.json`; the
 static build command above creates the publish directory without npm.
 
 The site does not use client-side URL routing, so no SPA rewrite rule is
-required. All visual assets are inline, and the only external resources are
-the Google Fonts requested by `index.html`.
+required. Visual assets are inline except for the supplied audio track and
+downloadable PDF in `audio/` and `assets/`. The only external resource is the
+Google Fonts request in `index.html`.
