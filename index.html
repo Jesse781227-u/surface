@@ -771,6 +771,7 @@ body{
   <span>10</span>
 </div>
 <audio id="birthday-audio" autoplay loop preload="auto">
+  <source src="audio/juicy.mp3" type="audio/mpeg">
   <source src="audio/juicy.m4a" type="audio/mp4">
 </audio>
 
@@ -1158,7 +1159,7 @@ body{
     });
   }
   function unmuteBirthdayAudio(){
-    if(!awaitingUnmute) return;
+    if(!awaitingUnmute && !birthdayAudio.paused && !birthdayAudio.muted) return;
     awaitingUnmute = false;
     birthdayAudio.muted = false;
     var attempt = birthdayAudio.play();
