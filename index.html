@@ -32,6 +32,7 @@ html,body{
 body{
   font-family:var(--sans);
   overflow:hidden;
+  -webkit-font-smoothing:antialiased;
 }
 
 @media (prefers-reduced-motion: reduce){
@@ -39,7 +40,7 @@ body{
 }
 
 #scroller{
-  height:100vh;
+  height:100svh;
   height:100dvh;
   overflow-y:scroll;
   scroll-snap-type:y mandatory;
@@ -49,7 +50,8 @@ body{
 #scroller::-webkit-scrollbar{display:none;}
 
 .screen{
-  height:100vh;
+  min-height:100svh;
+  height:100svh;
   height:100dvh;
   width:100%;
   scroll-snap-align:start;
@@ -59,7 +61,7 @@ body{
   flex-direction:column;
   justify-content:center;
   align-items:center;
-  padding:9vh 7.5vw 8vh;
+  padding:9svh 7.5vw 8svh;
   overflow:hidden;
 }
 
@@ -93,7 +95,7 @@ body{
 .content{
   position:relative;
   z-index:2;
-  max-width:560px;
+  max-width:600px;
   width:100%;
   text-align:center;
 }
@@ -134,7 +136,7 @@ body{
 .body-text{
   font-family:var(--sans);
   font-weight:400;
-  font-size:clamp(1rem,3.6vw,1.15rem);
+  font-size:clamp(1.08rem,3.6vw,1.18rem);
   line-height:1.6;
   max-width:38ch;
   margin-left:auto;
@@ -167,7 +169,7 @@ body{
   opacity:0.88;
   transition:opacity .35s ease, transform .35s ease, background .35s ease;
   margin-top:2.6em;
-  min-height:44px;
+  min-height:48px;
 }
 .next-btn:hover{ opacity:1; transform:translateY(-1px); }
 .next-btn:active{ transform:translateY(0px) scale(0.98); }
@@ -195,6 +197,365 @@ body{
 
 .gold{ color:var(--gold-bright); }
 .light .gold{ color:var(--gold); }
+
+/* ---------- quiet journey chrome ---------- */
+.story-rail{
+  position:fixed;
+  top:50%;
+  right:2.5vw;
+  z-index:10;
+  width:86px;
+  transform:translateY(-50%);
+  color:var(--cream);
+  pointer-events:none;
+}
+.story-rail::before{
+  content:'';
+  position:absolute;
+  top:6px;
+  bottom:6px;
+  left:5px;
+  width:1px;
+  background:rgba(203,169,88,0.25);
+}
+.story-rail ol{
+  list-style:none;
+  display:grid;
+  gap:1.15em;
+}
+.story-rail li{
+  position:relative;
+  min-height:12px;
+  padding-left:1.5em;
+  font-size:0.62rem;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  opacity:0.35;
+  transition:opacity .5s ease, color .5s ease;
+}
+.story-rail li::before{
+  content:'';
+  position:absolute;
+  top:0.2em;
+  left:0;
+  width:10px;
+  height:10px;
+  border:1px solid var(--gold-bright);
+  border-radius:50%;
+  background:var(--forest-deep);
+  transition:background .5s ease, box-shadow .5s ease;
+}
+.story-rail li.active{ opacity:1; color:var(--gold-bright); }
+.story-rail li.active::before{
+  background:var(--gold-bright);
+  box-shadow:0 0 10px rgba(203,169,88,0.6);
+}
+.progress-readout{
+  position:fixed;
+  left:2.5vw;
+  bottom:3.3vh;
+  z-index:10;
+  display:flex;
+  align-items:center;
+  gap:0.65em;
+  color:var(--gold-bright);
+  font-size:0.68rem;
+  letter-spacing:0.12em;
+  opacity:0.72;
+  pointer-events:none;
+}
+.progress-bar{
+  width:62px;
+  height:1px;
+  background:rgba(203,169,88,0.25);
+  overflow:hidden;
+}
+.progress-bar span{
+  display:block;
+  width:10%;
+  height:100%;
+  background:var(--gold-bright);
+  transition:width .7s cubic-bezier(.22,.61,.36,1);
+}
+.sound-toggle{
+  position:fixed;
+  top:2.5vh;
+  right:2.5vw;
+  z-index:12;
+  border:0;
+  background:none;
+  color:var(--gold-bright);
+  font:500 0.68rem var(--sans);
+  letter-spacing:0.1em;
+  opacity:0.65;
+  cursor:pointer;
+  min-height:44px;
+  padding:0.5em;
+}
+.sound-toggle:hover,.sound-toggle:focus-visible{ opacity:1; }
+
+/* ---------- opening sequence ---------- */
+.opening .content{ max-width:720px; }
+.opening .chapter-label{
+  display:block;
+  font:500 clamp(0.78rem,2vw,1rem) var(--sans);
+  letter-spacing:0.38em;
+  text-transform:uppercase;
+  color:var(--gold-bright);
+}
+.opening .opening-title{
+  margin-top:0.2em;
+  font-size:clamp(4.4rem,17vw,8.5rem);
+  line-height:0.87;
+  letter-spacing:-0.04em;
+}
+.opening .opening-plan{
+  margin-top:2.3em;
+  font:400 clamp(1.05rem,3.6vw,1.35rem) var(--serif);
+  font-style:italic;
+  opacity:0.72;
+}
+.opening .opening-year{
+  margin:2.8em auto 0;
+  max-width:21ch;
+  color:var(--gold-bright);
+  font:500 clamp(1.55rem,5.8vw,2.35rem) var(--serif);
+  line-height:1.18;
+}
+.opening .next-btn{
+  margin-top:2.4em;
+  font-size:1.02rem;
+  border-color:var(--gold-bright);
+  color:var(--gold-bright);
+}
+.why-reveal{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:0.65em;
+  padding:2em;
+  background:rgba(15,36,29,0.9);
+  opacity:0;
+  pointer-events:none;
+  transform:scale(1.03);
+  transition:opacity 1.05s ease, transform 1.2s cubic-bezier(.22,.61,.36,1);
+}
+.why-reveal span{
+  font-size:0.82rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  opacity:0.6;
+}
+.why-reveal strong{
+  color:var(--gold-bright);
+  font:400 clamp(2rem,7vw,3.3rem) var(--serif);
+}
+.opening.why-fired .why-reveal{
+  opacity:1;
+  transform:scale(1);
+}
+.opening.why-fired .opening-content{ opacity:0; transform:translateY(-12px); }
+.opening-content{ transition:opacity .55s ease, transform .75s ease; }
+
+/* ---------- cinematic hero beats ---------- */
+.family-hero .content{ max-width:740px; }
+.family-hero .family-arrival{
+  font:400 clamp(1.3rem,4.2vw,1.8rem) var(--serif);
+  line-height:1.2;
+  max-width:15ch;
+  margin:0 auto;
+}
+.family-hero .family-arrival span{ display:block; }
+.family-hero .family-arrival span:last-child{ margin-left:2.3em; }
+.family-hero .family-statement{
+  margin-top:2.4em;
+  font-size:clamp(2.65rem,10vw,5.5rem);
+  line-height:0.98;
+  letter-spacing:-0.035em;
+}
+.family-hero .family-statement span{ display:block; }
+.family-hero .family-statement span:last-child{ color:var(--gold-bright); }
+.peak{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.peak .content{ max-width:760px; }
+.peak .peak-prelude{
+  max-width:24ch;
+  margin:0 auto;
+  font:400 clamp(1.35rem,4.8vw,2rem) var(--serif);
+  line-height:1.3;
+}
+.peak .peak-line{
+  margin-top:1.5em;
+  color:var(--gold-bright);
+  font:400 clamp(3rem,11vw,6.3rem) var(--serif);
+  line-height:0.92;
+  letter-spacing:-0.04em;
+}
+.peak .peak-line span{ display:block; }
+.peak .peak-line span:last-child{ margin-left:0.65em; }
+
+/* ---------- lessons ---------- */
+.lessons .content{ max-width:660px; }
+.lessons-title{
+  max-width:16ch;
+  margin:0 auto;
+}
+.card-grid{ gap:0.45em; margin-top:1.2em; }
+.tap-card{
+  width:100%;
+  border-radius:2px;
+  padding:0.72em 1.05em;
+  min-height:52px;
+  text-align:left;
+  cursor:pointer;
+  color:inherit;
+  font:inherit;
+  background:rgba(255,255,255,0.02);
+  transition:border-color .4s ease, background .4s ease, transform .4s ease;
+}
+.tap-card:hover,.tap-card:focus-visible{ transform:translateX(4px); }
+.tap-card:focus-visible{ outline:2px solid currentColor; outline-offset:3px; }
+.tap-card.open{ background:rgba(180,146,74,0.1); }
+.tap-card[aria-expanded="true"] .tc-mark{ transform:none; }
+.tc-index{
+  display:inline-block;
+  width:2.2em;
+  color:var(--gold);
+  font:500 0.72rem var(--sans);
+  letter-spacing:0.08em;
+}
+.dark .tc-index,.deep .tc-index{ color:var(--gold-bright); }
+.tc-mark{ font-size:1.1rem; }
+.tc-body p{ max-width:34ch; }
+
+/* ---------- birthday transition and candles ---------- */
+.birthday-reveal .content{ max-width:760px; }
+.birthday-prelude{
+  max-width:22ch;
+  margin:0 auto;
+  font:400 clamp(1.15rem,4vw,1.6rem) var(--serif);
+  line-height:1.35;
+}
+.birthday-title{
+  margin-top:0.8em;
+  font-size:clamp(4rem,16vw,8rem);
+  line-height:0.84;
+  letter-spacing:-0.06em;
+}
+.birthday-title span{ display:block; }
+.birthday-wishes{ margin-top:1.4em; }
+.cake-wrap{ width:min(78vw,330px); }
+.candle-hit{
+  cursor:pointer;
+  outline:none;
+}
+.candle-hit:focus-visible{ outline:2px solid var(--gold-bright); outline-offset:5px; }
+.flame{ transition:opacity .35s ease, transform .35s ease; transform-origin:center bottom; }
+.flame.out{ opacity:0; transform:scale(0.55); }
+.smoke{
+  opacity:0;
+  stroke:var(--cream);
+  stroke-width:1.5;
+  fill:none;
+  stroke-linecap:round;
+}
+.smoke.show{ opacity:0.7; animation:smoke-rise 1.4s ease-out forwards; }
+@keyframes smoke-rise{
+  0%{ opacity:0; transform:translateY(3px) scale(.8); }
+  30%{ opacity:.7; }
+  100%{ opacity:0; transform:translateY(-22px) scale(1.15); }
+}
+.wish-line{
+  margin-top:1.1em;
+  font-size:clamp(1.8rem,7vw,3rem);
+}
+.candle-toast{ bottom:5.5vh; }
+.finale .content{ max-width:720px; }
+.finale-title{ font-size:clamp(2.6rem,8vw,4.8rem); }
+.letter-btn{
+  margin-top:2.2em;
+  border:0;
+  background:none;
+  color:var(--gold-bright);
+  font:500 0.8rem var(--sans);
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  cursor:pointer;
+  min-height:48px;
+  padding:0.8em 1em;
+  opacity:0.8;
+}
+.letter-btn:hover,.letter-btn:focus-visible{ opacity:1; text-decoration:underline; }
+
+/* ---------- full letter mode ---------- */
+.letter-panel{
+  position:fixed;
+  inset:0;
+  z-index:30;
+  display:flex;
+  justify-content:center;
+  padding:8vh 7vw;
+  background:rgba(15,36,29,0.98);
+  color:var(--cream);
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(18px);
+  transition:opacity .5s ease, transform .6s ease;
+  overflow-y:auto;
+}
+.letter-panel.open{ opacity:1; pointer-events:auto; transform:none; }
+.letter-inner{ width:min(680px,100%); padding-bottom:8vh; }
+.letter-kicker{
+  color:var(--gold-bright);
+  font:500 0.75rem var(--sans);
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+}
+.letter-inner h2{
+  margin-top:0.35em;
+  font:400 clamp(2.8rem,9vw,5.4rem) var(--serif);
+  line-height:0.95;
+}
+.letter-copy{
+  margin-top:2.6em;
+  font:400 clamp(1.08rem,3.6vw,1.2rem) var(--sans);
+  line-height:1.72;
+}
+.letter-copy p + p{ margin-top:1.2em; }
+.letter-close{
+  margin-top:2.5em;
+  border:1px solid var(--gold-bright);
+  border-radius:999px;
+  background:none;
+  color:var(--gold-bright);
+  padding:0.8em 1.4em;
+  min-height:48px;
+  cursor:pointer;
+}
+
+@media (max-width:700px){
+  .story-rail{ right:3vw; width:12px; }
+  .story-rail li{ padding-left:0; height:9px; font-size:0; }
+  .story-rail li::before{ width:8px; height:8px; }
+  .progress-readout{ left:4vw; bottom:2.5vh; }
+  .sound-toggle{ right:4vw; top:1.5vh; }
+  .screen{ padding-left:9vw; padding-right:9vw; }
+  .opening .opening-title{ font-size:clamp(4.2rem,19vw,6.6rem); }
+  .family-hero .family-statement{ font-size:clamp(2.8rem,12vw,4.5rem); }
+  .tap-card{ min-height:56px; }
+  .tc-title{ font-size:1.12rem; }
+  .letter-panel{ padding:10vh 9vw 5vh; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .story-rail li,.progress-bar span,.why-reveal,.opening-content,.tap-card,.letter-panel{ transition:none; }
+}
 
 /* ---------- Screen 1 ---------- */
 .s1-figure{
@@ -394,24 +755,45 @@ body{
 </head>
 <body>
 
+<aside class="story-rail" aria-label="Story timeline">
+  <ol>
+    <li data-rail="1">October</li>
+    <li data-rail="2">The conversation</li>
+    <li data-rail="3">Family</li>
+    <li data-rail="4">Lessons</li>
+    <li data-rail="5">Today</li>
+    <li data-rail="6">Birthday</li>
+  </ol>
+</aside>
+<div class="progress-readout" aria-hidden="true">
+  <span id="progress-current">01</span>
+  <div class="progress-bar"><span id="progress-fill"></span></div>
+  <span>10</span>
+</div>
+<button class="sound-toggle" id="sound-toggle" type="button" aria-pressed="false">♪ SOUND OFF</button>
+
 <div id="scroller">
 
   <!-- SCREEN 1 -->
-  <section class="screen deep" id="s1" data-screen>
+  <section class="screen deep opening" id="s1" data-screen data-journey="1">
     <div class="grain"></div>
     <div class="vignette"></div>
-    <div class="content s1-figure">
-      <span class="line huge d1">October.</span>
-      <span class="line huge d2">Two weeks.</span>
-      <span class="line body-small d3" style="margin-top:0.9em;">That was the plan.</span>
-      <span class="line display-m gold d5" style="margin-top:1.4em;">It has been almost a year.</span>
-      <button class="next-btn line d7" data-next="s2">Why?→</button>
+    <div class="content opening-content">
+      <span class="line chapter-label d1">October</span>
+      <h1 class="line opening-title d2">Two weeks.</h1>
+      <p class="line opening-plan d3">That was the plan.</p>
+      <p class="line opening-year d5">It has been almost a year.</p>
+      <button class="next-btn line d7" data-next="s2" data-trigger="why">Why? <span aria-hidden="true">→</span></button>
+    </div>
+    <div class="why-reveal" id="why-reveal" aria-live="polite">
+      <span>Because something changed.</span>
+      <strong>One conversation.</strong>
     </div>
     <div class="scroll-hint">scroll</div>
   </section>
 
   <!-- SCREEN 2 -->
-  <section class="screen dark" id="s2" data-screen>
+  <section class="screen dark" id="s2" data-screen data-journey="2">
     <div class="grain"></div>
     <div class="vignette"></div>
     <div class="content">
@@ -453,53 +835,61 @@ body{
   </section>
 
   <!-- SCREEN 3 -->
-  <section class="screen deep" id="s3" data-screen>
+  <section class="screen deep family-hero" id="s3" data-screen data-journey="3">
     <div class="grain"></div>
     <div class="vignette"></div>
     <div class="content">
-      <h2 class="display-l line d1">I became part of your family.</h2>
-      <div class="body-text stack" style="margin-top:1.3em;">
-        <span class="line d2">I came to your house as someone staying for a little while.</span>
-        <span class="line d3">I became a part of something again.</span>
-      </div>
-      <button class="next-btn icon line d5" data-next="s4" aria-label="Continue"><svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+      <p class="family-arrival">
+        <span class="line d1">I came to your house</span>
+        <span class="line d2">as someone staying</span>
+        <span class="line d3">for a little while.</span>
+      </p>
+      <h2 class="family-statement">
+        <span class="line d5">I became part</span>
+        <span class="line d6">of something</span>
+        <span class="line gold d7">again.</span>
+      </h2>
+      <p class="display-l" style="margin-top:1.4em;">
+        <span class="line d9">I became part of your family.</span>
+      </p>
+      <button class="next-btn icon line d11" data-next="s4" aria-label="Continue"><svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
     </div>
   </section>
 
   <!-- SCREEN 4 -->
-  <section class="screen light" id="s4" data-screen>
+  <section class="screen light lessons" id="s4" data-screen data-journey="4">
     <div class="grain"></div>
     <div class="vignette"></div>
     <div class="content">
-      <h2 class="display-l line d1">You taught me things, real things.</h2>
+      <h2 class="display-l lessons-title line d1">You taught me things, real things.</h2>
       <div class="card-grid line d2">
-        <div class="tap-card" data-card>
-          <div class="tc-title"><span>Competence</span><span class="tc-mark">+</span></div>
+        <button class="tap-card" type="button" data-card aria-expanded="false">
+          <div class="tc-title"><span><span class="tc-index">01</span>Competence</span><span class="tc-mark">+</span></div>
           <div class="tc-body"><p>Things don't magically get done, you must do them.</p></div>
-        </div>
-        <div class="tap-card" data-card>
-          <div class="tc-title"><span>Accountability</span><span class="tc-mark">+</span></div>
+        </button>
+        <button class="tap-card" type="button" data-card aria-expanded="false">
+          <div class="tc-title"><span><span class="tc-index">02</span>Accountability</span><span class="tc-mark">+</span></div>
           <div class="tc-body"><p>That what you do or don't do, matters, and you must own it.</p></div>
-        </div>
-        <div class="tap-card" data-card>
-          <div class="tc-title"><span>Family</span><span class="tc-mark">+</span></div>
+        </button>
+        <button class="tap-card" type="button" data-card aria-expanded="false">
+          <div class="tc-title"><span><span class="tc-index">03</span>Family</span><span class="tc-mark">+</span></div>
           <div class="tc-body"><p>That being part of a family means actually showing up.</p></div>
-        </div>
-        <div class="tap-card" data-card>
-          <div class="tc-title"><span>People</span><span class="tc-mark">+</span></div>
+        </button>
+        <button class="tap-card" type="button" data-card aria-expanded="false">
+          <div class="tc-title"><span><span class="tc-index">04</span>People</span><span class="tc-mark">+</span></div>
           <div class="tc-body"><p>That hiding inside yourself isn't an option.</p></div>
-        </div>
-        <div class="tap-card" data-card>
-          <div class="tc-title"><span>Growing up</span><span class="tc-mark">+</span></div>
+        </button>
+        <button class="tap-card" type="button" data-card aria-expanded="false">
+          <div class="tc-title"><span><span class="tc-index">05</span>Growing up</span><span class="tc-mark">+</span></div>
           <div class="tc-body"><p>That adulthood isn't just escaping everyone and becoming a recluse.</p></div>
-        </div>
+        </button>
       </div>
-      <button class="next-btn icon line d3" data-next="s5" aria-label="Continue"><svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+      <button class="next-btn icon line d4" data-next="s5" aria-label="Continue"><svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
     </div>
   </section>
 
   <!-- SCREEN 5 -->
-  <section class="screen light" id="s5" data-screen>
+  <section class="screen light" id="s5" data-screen data-journey="4">
     <div class="grain"></div>
     <div class="vignette"></div>
     <div class="content">
@@ -512,17 +902,17 @@ body{
   </section>
 
   <!-- SCREEN 6 -->
-  <section class="screen deep" id="s6" data-screen>
+  <section class="screen deep" id="s6" data-screen data-journey="5">
     <div class="grain"></div>
     <div class="vignette"></div>
     <div class="content">
       <p class="display-l gold line d1">You could intimidate an entire room, you have palms the size of shovels, but you've somehow chosen to make people laugh instead.</p>
-      <button class="next-btn icon line d3" data-next="s8" aria-label="Continue"><svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+      <button class="next-btn icon line d3" data-next="s7" aria-label="Continue"><svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
     </div>
   </section>
 
-  <!-- SCREEN 8 -->
-  <section class="screen deep" id="s8" data-screen>
+  <!-- SCREEN 7 -->
+  <section class="screen deep" id="s7" data-screen data-journey="5">
     <div class="grain"></div>
     <div class="vignette"></div>
     <div class="content">
@@ -536,97 +926,159 @@ body{
         <span class="line d6">You held me accountable and called me out on my bullshit.</span>
         <span class="line d7">You're currently wrangling me out of my shell (I hope I get to come out sufficiently enough soon)</span>
         <span class="line d8">You made me participate and included me in discussions.</span>
-        <span class="line d9">And without making any huge announcement about it, you gave me something I had spent a long time trying to run away from.</span>
       </div>
-      <p class="display-m gold" style="margin-top:1.8em;">
-        <span class="line d10">You let me be someone's kid again.</span>
+      <button class="next-btn icon line d10" data-next="s8" aria-label="Continue"><svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+    </div>
+  </section>
+
+  <!-- SCREEN 8: emotional peak -->
+  <section class="screen deep peak" id="s8" data-screen data-journey="5">
+    <div class="grain"></div>
+    <div class="vignette"></div>
+    <div class="content">
+      <p class="peak-prelude">
+        <span class="line d2">And without making any huge announcement about it,</span>
+        <span class="line d4">you gave me something I had spent a long time trying to run away from.</span>
       </p>
-      <p class="body-text" style="margin-top:1.2em;">
-        <span class="line d11">For that, I will always be grateful.</span>
+      <p class="peak-line">
+        <span class="line d7">You let me be</span>
+        <span class="line d8">someone's kid again.</span>
+      </p>
+      <p class="body-text" style="margin-top:1.6em;">
+        <span class="line d10">For that, I will always be grateful.</span>
       </p>
       <button class="next-btn icon line d12" data-next="s9" aria-label="Continue"><svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
     </div>
   </section>
 
   <!-- SCREEN 9 -->
-  <section class="screen dark" id="s9" data-screen>
+  <section class="screen dark birthday-reveal" id="s9" data-screen data-journey="6">
     <div class="grain"></div>
     <div class="vignette"></div>
     <div class="content">
-      <p class="body-small line d1">And now&hellip;</p>
-      <h2 class="display-xl gold line d2" style="margin-top:0.2em;">Happy Birthday.</h2>
-      <div class="body-text stack" style="margin-top:1.3em;">
-        <span class="line d3">I hope this next year gives you more of the good things you've given the people around you.</span>
-        <span class="line d3">I pray you live for as long as you want, and never want for as long as you live.</span>
+      <p class="birthday-prelude">
+        <span class="line d1">So&hellip;</span>
+        <span class="line d2">after all that,</span>
+        <span class="line d3">there's really only one thing left to say.</span>
+      </p>
+      <h2 class="birthday-title gold">
+        <span class="line d5">Happy</span>
+        <span class="line d6">Birthday.</span>
+      </h2>
+      <div class="body-text stack birthday-wishes">
+        <span class="line d7">I hope this next year gives you more of the good things you've given the people around you.</span>
+        <span class="line d7">I pray you live for as long as you want, and never want for as long as you live.</span>
       </div>
       <div class="body-text stack" style="margin-top:1.1em; font-family:var(--serif); font-style:italic; font-size:1.1rem;">
-        <span class="line d4">Good health.</span>
-        <span class="line d4">Peace.</span>
-        <span class="line d5">Laughter.</span>
-        <span class="line d5">Family.</span>
-        <span class="line d6">Plenty of reasons to smile.</span>
-        <span class="line d6">And absolutely no shortage of people available for you to bully at the dining table.</span>
+        <span class="line d8">Good health.</span>
+        <span class="line d8">Peace.</span>
+        <span class="line d9">Laughter.</span>
+        <span class="line d9">Family.</span>
+        <span class="line d10">Plenty of reasons to smile.</span>
+        <span class="line d10">And absolutely no shortage of people available for you to bully at the dining table.</span>
       </div>
 
-      <div class="cake-wrap line d7">
+      <div class="cake-wrap line d11">
         <svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg" width="100%">
           <ellipse cx="110" cy="158" rx="88" ry="10" fill="#0B1F17" opacity="0.6"/>
           <rect x="35" y="110" width="150" height="42" rx="6" fill="#3A2418"/>
           <rect x="35" y="110" width="150" height="10" fill="#F2ECDC" opacity="0.9"/>
           <rect x="55" y="82" width="110" height="34" rx="6" fill="#4A2E1E"/>
           <rect x="55" y="82" width="110" height="9" fill="#F2ECDC" opacity="0.9"/>
-          <g id="candle-1" data-candle>
+          <g id="candle-1" class="candle-hit" data-candle tabindex="0" role="button" aria-label="Extinguish left candle">
             <rect x="72" y="58" width="7" height="26" fill="#CBA958"/>
             <path class="flame glow" d="M75.5 40c4 5 4 10 0 14c-4-4-4-9 0-14Z" fill="#F0A93A"/>
+            <path class="smoke" d="M75 39c-5-6 4-8 0-14c-3-4 2-7 1-11"/>
           </g>
-          <g id="candle-2" data-candle>
+          <g id="candle-2" class="candle-hit" data-candle tabindex="0" role="button" aria-label="Extinguish middle candle">
             <rect x="106" y="52" width="7" height="32" fill="#CBA958"/>
             <path class="flame glow" d="M109.5 32c4.5 5.5 4.5 11 0 15.5c-4.5-4.5-4.5-10 0-15.5Z" fill="#F0A93A"/>
+            <path class="smoke" d="M109 31c-5-6 4-8 0-14c-3-4 2-7 1-11"/>
           </g>
-          <g id="candle-3" data-candle>
+          <g id="candle-3" class="candle-hit" data-candle tabindex="0" role="button" aria-label="Extinguish right candle">
             <rect x="140" y="58" width="7" height="26" fill="#CBA958"/>
             <path class="flame glow" d="M143.5 40c4 5 4 10 0 14c-4-4-4-9 0-14Z" fill="#F0A93A"/>
+            <path class="smoke" d="M143 39c-5-6 4-8 0-14c-3-4 2-7 1-11"/>
           </g>
         </svg>
       </div>
-      <p class="body-small line d8" id="candle-hint" style="margin-top:0.6em;">Tap the candles.</p>
+      <p class="body-small line d12" id="candle-hint" style="margin-top:0.6em;">Tap the candles.</p>
       <p class="wish-line display-m gold" id="wish-granted">Wish granted.</p>
-      <button class="next-btn icon line d9 locked" id="s9-next" data-next="s10" aria-label="Continue"><svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+      <button class="next-btn icon line d12 locked" id="s9-next" data-next="s10" aria-label="Continue"><svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
     </div>
     <div class="candle-toast" id="candle-toast">Tap all the candles out first</div>
   </section>
 
   <!-- SCREEN 10 -->
-  <section class="screen deep" id="s10" data-screen>
+  <section class="screen deep finale" id="s10" data-screen data-journey="6">
     <div class="grain"></div>
     <div class="vignette"></div>
     <div class="embers" id="embers"></div>
     <div class="content">
-      <h2 class="display-l line d1">Happy Birthday, Uncle.</h2>
+      <h2 class="display-l finale-title line d1">Happy Birthday, Uncle.</h2>
       <p class="body-text" style="margin-top:1.4em;">
         <span class="line d3">Thank you for letting a holiday become home.</span>
       </p>
+      <button class="letter-btn line d6" id="letter-open" type="button">Read the whole letter</button>
     </div>
   </section>
 
 </div>
 
+<aside class="letter-panel" id="letter-panel" aria-hidden="true" aria-labelledby="letter-title">
+  <div class="letter-inner">
+    <p class="letter-kicker">For Uncle</p>
+    <h2 id="letter-title">Thank you.</h2>
+    <div class="letter-copy">
+      <p>The night before I was to leave, you and Aunt called me in. You didn't ask about school. You didn't ask about work. It wasn't an appraisal. You asked me about me.</p>
+      <p>“How has life been?” “How was growing up?” “How are you handling adulthood?” “What have you been through?”</p>
+      <p>It wasn't performative. You actually wanted to know, you were actually interested in me. And somewhere in that conversation, the two-week holiday stopped being a holiday.</p>
+      <p>I came to your house as someone staying for a little while. I became a part of something again. I became part of your family.</p>
+      <p>You taught me things, real things. Things don't magically get done, you must do them. That what you do or don't do, matters, and you must own it. That being part of a family means actually showing up. That hiding inside yourself isn't an option. That adulthood isn't just escaping everyone and becoming a recluse.</p>
+      <p>The ultimatums for socialising, and maintaining order in my room, and making sure I always said something. And then there were the other things, the “please” and “thank you” I'd get for ironing your clothes or bringing you a glass of water, it was very foreign to me, gave me a sense that I was actually useful.</p>
+      <p>You could intimidate an entire room, you have palms the size of shovels, but you've somehow chosen to make people laugh instead.</p>
+      <p>I don't think I ever properly said thank you. I don't know if I'll ever be able to adequately show how truly grateful I am. I came here thinking I was just coming for two weeks. Instead, I found myself becoming part of a family. You gave me structure and you taught me responsibility. You held me accountable and called me out on my bullshit. You're currently wrangling me out of my shell (I hope I get to come out sufficiently enough soon). You made me participate and included me in discussions.</p>
+      <p>And without making any huge announcement about it, you gave me something I had spent a long time trying to run away from.</p>
+      <p>You let me be someone's kid again. For that, I will always be grateful.</p>
+      <p>I hope this next year gives you more of the good things you've given the people around you. I pray you live for as long as you want, and never want for as long as you live.</p>
+      <p><em>Good health. Peace. Laughter. Family. Plenty of reasons to smile. And absolutely no shortage of people available for you to bully at the dining table.</em></p>
+      <p>Happy Birthday, Uncle. Thank you for letting a holiday become home.</p>
+    </div>
+    <button class="letter-close" id="letter-close" type="button">Back to the experience</button>
+  </div>
+</aside>
+
 <script>
 (function(){
   var scroller = document.getElementById('scroller');
   var screens = Array.prototype.slice.call(document.querySelectorAll('[data-screen]'));
+  var progressCurrent = document.getElementById('progress-current');
+  var progressFill = document.getElementById('progress-fill');
+  var railItems = document.querySelectorAll('[data-rail]');
 
   // Reveal-on-view for progressive line animation
   var currentScreenId = 's1';
+  function setProgress(screen){
+    var index = screens.indexOf(screen);
+    if(index < 0) return;
+    progressCurrent.textContent = String(index + 1).padStart(2, '0');
+    progressFill.style.width = (((index + 1) / screens.length) * 100) + '%';
+    var journey = screen.getAttribute('data-journey');
+    railItems.forEach(function(item){
+      item.classList.toggle('active', item.getAttribute('data-rail') === journey);
+    });
+  }
   var io = new IntersectionObserver(function(entries){
     entries.forEach(function(e){
       if(e.isIntersecting && e.intersectionRatio > 0.55){
         e.target.classList.add('in-view');
         currentScreenId = e.target.id;
+        setProgress(e.target);
       }
     });
   }, { threshold:[0,0.55,1] });
   screens.forEach(function(s){ io.observe(s); });
+  setProgress(screens[0]);
 
   // Screen 9 cannot be scrolled past until every candle is out
   var candlesLocked = true;
@@ -660,47 +1112,112 @@ body{
   document.querySelectorAll('[data-next]').forEach(function(btn){
     btn.addEventListener('click', function(){
       var target = document.getElementById(btn.getAttribute('data-next'));
-      if(target){ target.scrollIntoView({ behavior:'smooth' }); }
+      if(!target) return;
+      if(btn.getAttribute('data-trigger') === 'why'){
+        var opening = document.getElementById('s1');
+        opening.classList.add('why-fired');
+        btn.disabled = true;
+        setTimeout(function(){ target.scrollIntoView({ behavior:'smooth' }); }, 1200);
+        return;
+      }
+      target.scrollIntoView({ behavior:'smooth' });
     });
   });
 
-  // tap-to-reveal cards (screens 4 & 5)
+  // tap-to-reveal cards: only one lesson stays open
   document.querySelectorAll('[data-card]').forEach(function(card){
     card.addEventListener('click', function(){
-      card.classList.toggle('open');
-    });
-  });
-
-  // timeline tabs (screen 3)
-  var tabs = document.querySelectorAll('.tl-tab');
-  tabs.forEach(function(tab){
-    tab.addEventListener('click', function(){
-      var key = tab.getAttribute('data-tab');
-      tabs.forEach(function(t){ t.classList.remove('active'); });
-      tab.classList.add('active');
-      document.querySelectorAll('.tl-panel').forEach(function(p){
-        p.classList.toggle('active', p.getAttribute('data-panel') === key);
+      var isOpen = card.getAttribute('aria-expanded') === 'true';
+      document.querySelectorAll('[data-card]').forEach(function(other){
+        other.classList.remove('open');
+        other.setAttribute('aria-expanded', 'false');
+        var mark = other.querySelector('.tc-mark');
+        if(mark) mark.textContent = '+';
       });
+      if(!isOpen){
+        card.classList.add('open');
+        card.setAttribute('aria-expanded', 'true');
+        var mark = card.querySelector('.tc-mark');
+        if(mark) mark.textContent = '−';
+      }
     });
   });
 
-  // cake candles (screen 9)
-  var candles = document.querySelectorAll('[data-candle] .flame');
+  // Optional sound stays off until the visitor chooses it.
+  var soundOn = false;
+  var audioContext = null;
+  var soundToggle = document.getElementById('sound-toggle');
+  soundToggle.addEventListener('click', function(){
+    soundOn = !soundOn;
+    soundToggle.setAttribute('aria-pressed', String(soundOn));
+    soundToggle.textContent = soundOn ? '♪ SOUND ON' : '♪ SOUND OFF';
+  });
+  function playExtinguishSound(){
+    if(!soundOn) return;
+    var AudioCtor = window.AudioContext || window.webkitAudioContext;
+    if(!AudioCtor) return;
+    audioContext = audioContext || new AudioCtor();
+    var oscillator = audioContext.createOscillator();
+    var gain = audioContext.createGain();
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(260, audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(120, audioContext.currentTime + 0.18);
+    gain.gain.setValueAtTime(0.0001, audioContext.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.045, audioContext.currentTime + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.2);
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 0.22);
+  }
+
+  // Cake candles: each has a visible smoke trail and keyboard support.
+  var candleGroups = document.querySelectorAll('[data-candle]');
+  var flames = document.querySelectorAll('[data-candle] .flame');
   var hint = document.getElementById('candle-hint');
   var wish = document.getElementById('wish-granted');
   var s9next = document.getElementById('s9-next');
-  candles.forEach(function(flame){
-    flame.addEventListener('click', function(){
-      if(flame.classList.contains('out')) return;
-      flame.classList.add('out');
-      var allOut = Array.prototype.every.call(candles, function(f){ return f.classList.contains('out'); });
+  function extinguish(group){
+    var flame = group.querySelector('.flame');
+    var smoke = group.querySelector('.smoke');
+    if(!flame || flame.classList.contains('out')) return;
+    flame.classList.add('out');
+    if(smoke) smoke.classList.add('show');
+    group.setAttribute('aria-label', 'Candle extinguished');
+    playExtinguishSound();
+    if(navigator.vibrate) navigator.vibrate(18);
+    var allOut = Array.prototype.every.call(flames, function(f){ return f.classList.contains('out'); });
       if(allOut){
         hint.style.opacity = '0';
         wish.classList.add('show');
         candlesLocked = false;
         s9next.classList.remove('locked');
       }
+  }
+  candleGroups.forEach(function(group){
+    group.addEventListener('click', function(){ extinguish(group); });
+    group.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar'){
+        e.preventDefault();
+        extinguish(group);
+      }
     });
+  });
+
+  // The complete letter is available after the final beat.
+  var letterPanel = document.getElementById('letter-panel');
+  var letterOpen = document.getElementById('letter-open');
+  var letterClose = document.getElementById('letter-close');
+  function toggleLetter(open){
+    letterPanel.classList.toggle('open', open);
+    letterPanel.setAttribute('aria-hidden', String(!open));
+    if(open) letterClose.focus();
+    else letterOpen.focus();
+  }
+  letterOpen.addEventListener('click', function(){ toggleLetter(true); });
+  letterClose.addEventListener('click', function(){ toggleLetter(false); });
+  window.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && letterPanel.classList.contains('open')) toggleLetter(false);
   });
 
   // embers on final screen
