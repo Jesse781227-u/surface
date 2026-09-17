@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>For Uncle</title>
+<title>Happy Birthday Uncle</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -770,7 +770,6 @@ body{
   <div class="progress-bar"><span id="progress-fill"></span></div>
   <span>10</span>
 </div>
-<button class="sound-toggle" id="sound-toggle" type="button" aria-pressed="false">♪ SOUND OFF</button>
 <audio id="birthday-audio" src="audio/juicy.m4a" autoplay loop preload="auto"></audio>
 
 <div id="scroller">
@@ -925,7 +924,7 @@ body{
         <span class="line d4">Instead, I found myself becoming part of a family.</span>
         <span class="line d5">You gave me structure and you taught me responsibility.</span>
         <span class="line d6">You held me accountable and called me out on my bullshit.</span>
-        <span class="line d7">You're currently wrangling me out of my shell (I hope I get to come out sufficiently enough soon)</span>
+        <span class="line d7">You're currently wrangling me out of my shell (I hope I get to come out sufficiently enough soon, I seem to have you at your wits' end with it).</span>
         <span class="line d8">You made me participate and included me in discussions.</span>
       </div>
       <button class="next-btn icon line d10" data-next="s8" aria-label="Continue"><svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
@@ -1038,7 +1037,7 @@ body{
       <p>You taught me things, real things. Things don't magically get done, you must do them. That what you do or don't do, matters, and you must own it. That being part of a family means actually showing up. That hiding inside yourself isn't an option. That adulthood isn't just escaping everyone and becoming a recluse.</p>
       <p>The ultimatums for socialising, and maintaining order in my room, and making sure I always said something. And then there were the other things, the “please” and “thank you” I'd get for ironing your clothes or bringing you a glass of water, it was very foreign to me, gave me a sense that I was actually useful.</p>
       <p>You could intimidate an entire room, you have palms the size of shovels, but you've somehow chosen to make people laugh instead.</p>
-      <p>I don't think I ever properly said thank you. I don't know if I'll ever be able to adequately show how truly grateful I am. I came here thinking I was just coming for two weeks. Instead, I found myself becoming part of a family. You gave me structure and you taught me responsibility. You held me accountable and called me out on my bullshit. You're currently wrangling me out of my shell (I hope I get to come out sufficiently enough soon). You made me participate and included me in discussions.</p>
+      <p>I don't think I ever properly said thank you. I don't know if I'll ever be able to adequately show how truly grateful I am. I came here thinking I was just coming for two weeks. Instead, I found myself becoming part of a family. You gave me structure and you taught me responsibility. You held me accountable and called me out on my bullshit. You're currently wrangling me out of my shell (I hope I get to come out sufficiently enough soon, I seem to have you at your wits' end with it). You made me participate and included me in discussions.</p>
       <p>And without making any huge announcement about it, you gave me something I had spent a long time trying to run away from.</p>
       <p>You let me be someone's kid again. For that, I will always be grateful.</p>
       <p>I hope this next year gives you more of the good things you've given the people around you. I pray you live for as long as you want, and never want for as long as you live.</p>
@@ -1145,38 +1144,52 @@ body{
   });
 
   // Start the supplied track immediately where the browser allows it.
-  // Browsers that block audible autoplay get a first-interaction fallback.
   var birthdayAudio = document.getElementById('birthday-audio');
   var soundOn = false;
   var audioContext = null;
-  var soundToggle = document.getElementById('sound-toggle');
-  function setSoundState(playing){
-    soundOn = playing;
-    soundToggle.setAttribute('aria-pressed', String(playing));
-    soundToggle.textContent = playing ? '♪ SOUND ON' : '♪ SOUND OFF';
-  }
-  function startBirthdayAudio(){
+  var awaitingUnmute = false;
+
+  function unmuteBirthdayAudio(){
+    if(!awaitingUnmute) return;
+    awaitingUnmute = false;
+    birthdayAudio.muted = false;
     var attempt = birthdayAudio.play();
     if(attempt && attempt.catch){
-      attempt.then(function(){ setSoundState(true); }).catch(function(){
-        soundToggle.textContent = '♪ TAP FOR SOUND';
+      attempt.then(function(){ soundOn = true; }).catch(function(){
+        birthdayAudio.muted = true;
+        awaitingUnmute = true;
       });
     } else {
-      setSoundState(true);
+      soundOn = true;
     }
   }
-  birthdayAudio.addEventListener('play', function(){ setSoundState(true); });
-  birthdayAudio.addEventListener('pause', function(){ setSoundState(false); });
-  soundToggle.addEventListener('click', function(){
-    if(birthdayAudio.paused) startBirthdayAudio();
-    else birthdayAudio.pause();
+  ['scroll', 'pointerdown', 'click', 'keydown'].forEach(function(eventName){
+    document.addEventListener(eventName, unmuteBirthdayAudio, {
+      once: true,
+      passive: true,
+      capture: eventName === 'scroll'
+    });
   });
-  document.addEventListener('pointerdown', function(){
-    if(birthdayAudio.paused) startBirthdayAudio();
-  }, { once:true });
-  document.addEventListener('keydown', function(){
-    if(birthdayAudio.paused) startBirthdayAudio();
-  }, { once:true });
+  function startBirthdayAudio(){
+    birthdayAudio.muted = false;
+    var attempt = birthdayAudio.play();
+    if(attempt && attempt.catch){
+      attempt.then(function(){ soundOn = true; }).catch(function(){
+        birthdayAudio.muted = true;
+        awaitingUnmute = true;
+        var mutedAttempt = birthdayAudio.play();
+        if(mutedAttempt && mutedAttempt.catch){
+          mutedAttempt.then(function(){ soundOn = false; }).catch(function(){ soundOn = false; });
+        } else {
+          soundOn = false;
+        }
+      });
+    } else {
+      soundOn = true;
+    }
+  }
+  birthdayAudio.addEventListener('play', function(){ soundOn = !birthdayAudio.muted; });
+  birthdayAudio.addEventListener('pause', function(){ soundOn = false; });
   startBirthdayAudio();
   function playExtinguishSound(){
     if(!soundOn) return;
