@@ -770,7 +770,9 @@ body{
   <div class="progress-bar"><span id="progress-fill"></span></div>
   <span>10</span>
 </div>
-<audio id="birthday-audio" src="audio/juicy.m4a" autoplay loop preload="auto"></audio>
+<audio id="birthday-audio" autoplay loop preload="auto">
+  <source src="audio/juicy.m4a" type="audio/mp4">
+</audio>
 
 <div id="scroller">
 
@@ -1019,7 +1021,7 @@ body{
       <p class="body-text" style="margin-top:1.4em;">
         <span class="line d3">Thank you for letting a holiday become home.</span>
       </p>
-      <button class="letter-btn line d6" id="letter-open" type="button">Read the whole letter</button>
+      <a class="letter-btn line d6" id="letter-open" href="assets/for-uncle.pdf" download="For-Uncle-Letter.pdf">Read the whole letter</a>
     </div>
   </section>
 
@@ -1148,33 +1150,45 @@ body{
   var soundOn = false;
   var audioContext = null;
   var awaitingUnmute = false;
+  var interactionEvents = ['scroll', 'pointerdown', 'touchstart', 'click', 'keydown', 'wheel'];
 
+  function removeUnmuteListeners(){
+    interactionEvents.forEach(function(eventName){
+      document.removeEventListener(eventName, unmuteBirthdayAudio, eventName === 'scroll' || eventName === 'touchstart' || eventName === 'wheel');
+    });
+  }
   function unmuteBirthdayAudio(){
     if(!awaitingUnmute) return;
     awaitingUnmute = false;
     birthdayAudio.muted = false;
     var attempt = birthdayAudio.play();
     if(attempt && attempt.catch){
-      attempt.then(function(){ soundOn = true; }).catch(function(){
+      attempt.then(function(){
+        soundOn = true;
+        removeUnmuteListeners();
+      }).catch(function(){
         birthdayAudio.muted = true;
         awaitingUnmute = true;
       });
     } else {
       soundOn = true;
+      removeUnmuteListeners();
     }
   }
-  ['scroll', 'pointerdown', 'click', 'keydown'].forEach(function(eventName){
+  interactionEvents.forEach(function(eventName){
     document.addEventListener(eventName, unmuteBirthdayAudio, {
-      once: true,
       passive: true,
-      capture: eventName === 'scroll'
+      capture: eventName === 'scroll' || eventName === 'touchstart' || eventName === 'wheel'
     });
   });
   function startBirthdayAudio(){
     birthdayAudio.muted = false;
     var attempt = birthdayAudio.play();
     if(attempt && attempt.catch){
-      attempt.then(function(){ soundOn = true; }).catch(function(){
+      attempt.then(function(){
+        soundOn = true;
+        removeUnmuteListeners();
+      }).catch(function(){
         birthdayAudio.muted = true;
         awaitingUnmute = true;
         var mutedAttempt = birthdayAudio.play();
@@ -1186,6 +1200,7 @@ body{
       });
     } else {
       soundOn = true;
+      removeUnmuteListeners();
     }
   }
   birthdayAudio.addEventListener('play', function(){ soundOn = !birthdayAudio.muted; });
@@ -1253,16 +1268,7 @@ body{
     if(open) letterClose.focus();
     else letterOpen.focus();
   }
-  function downloadLetter(){
-    var link = document.createElement('a');
-    link.href = 'assets/for-uncle.pdf';
-    link.download = 'For-Uncle-Letter.pdf';
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  }
   letterOpen.addEventListener('click', function(){
-    downloadLetter();
     toggleLetter(true);
   });
   letterClose.addEventListener('click', function(){ toggleLetter(false); });
