@@ -771,6 +771,7 @@ body{
   <span>10</span>
 </div>
 <button class="sound-toggle" id="sound-toggle" type="button" aria-pressed="false">♪ SOUND OFF</button>
+<audio id="birthday-audio" src="audio/juicy.m4a" autoplay loop preload="auto"></audio>
 
 <div id="scroller">
 
@@ -1044,7 +1045,7 @@ body{
       <p><em>Good health. Peace. Laughter. Family. Plenty of reasons to smile. And absolutely no shortage of people available for you to bully at the dining table.</em></p>
       <p>Happy Birthday, Uncle. Thank you for letting a holiday become home.</p>
     </div>
-    <button class="letter-close" id="letter-close" type="button">Back to the experience</button>
+    <button class="letter-close" id="letter-close" type="button">Back</button>
   </div>
 </aside>
 
@@ -1143,15 +1144,40 @@ body{
     });
   });
 
-  // Optional sound stays off until the visitor chooses it.
+  // Start the supplied track immediately where the browser allows it.
+  // Browsers that block audible autoplay get a first-interaction fallback.
+  var birthdayAudio = document.getElementById('birthday-audio');
   var soundOn = false;
   var audioContext = null;
   var soundToggle = document.getElementById('sound-toggle');
+  function setSoundState(playing){
+    soundOn = playing;
+    soundToggle.setAttribute('aria-pressed', String(playing));
+    soundToggle.textContent = playing ? '♪ SOUND ON' : '♪ SOUND OFF';
+  }
+  function startBirthdayAudio(){
+    var attempt = birthdayAudio.play();
+    if(attempt && attempt.catch){
+      attempt.then(function(){ setSoundState(true); }).catch(function(){
+        soundToggle.textContent = '♪ TAP FOR SOUND';
+      });
+    } else {
+      setSoundState(true);
+    }
+  }
+  birthdayAudio.addEventListener('play', function(){ setSoundState(true); });
+  birthdayAudio.addEventListener('pause', function(){ setSoundState(false); });
   soundToggle.addEventListener('click', function(){
-    soundOn = !soundOn;
-    soundToggle.setAttribute('aria-pressed', String(soundOn));
-    soundToggle.textContent = soundOn ? '♪ SOUND ON' : '♪ SOUND OFF';
+    if(birthdayAudio.paused) startBirthdayAudio();
+    else birthdayAudio.pause();
   });
+  document.addEventListener('pointerdown', function(){
+    if(birthdayAudio.paused) startBirthdayAudio();
+  }, { once:true });
+  document.addEventListener('keydown', function(){
+    if(birthdayAudio.paused) startBirthdayAudio();
+  }, { once:true });
+  startBirthdayAudio();
   function playExtinguishSound(){
     if(!soundOn) return;
     var AudioCtor = window.AudioContext || window.webkitAudioContext;
@@ -1214,7 +1240,18 @@ body{
     if(open) letterClose.focus();
     else letterOpen.focus();
   }
-  letterOpen.addEventListener('click', function(){ toggleLetter(true); });
+  function downloadLetter(){
+    var link = document.createElement('a');
+    link.href = 'assets/for-uncle.pdf';
+    link.download = 'For-Uncle-Letter.pdf';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }
+  letterOpen.addEventListener('click', function(){
+    downloadLetter();
+    toggleLetter(true);
+  });
   letterClose.addEventListener('click', function(){ toggleLetter(false); });
   window.addEventListener('keydown', function(e){
     if(e.key === 'Escape' && letterPanel.classList.contains('open')) toggleLetter(false);
