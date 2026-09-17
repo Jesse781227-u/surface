@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Happy Birthday, Uncle</title>
+  <style>
+    @page { size: A4; margin: 0; }
+    :root {
+      --ink: #1b2d2a;
+      --forest: #173b35;
+      --forest-dark: #102b27;
+      --cream: #f4f0e6;
+      --paper: #fbfaf6;
+      --gold: #b98a42;
+      --muted: #65736d;
+      --rule: #d8d4c8;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: #d9ddd7;
+      color: var(--ink);
+      font-family: Arial, "Helvetica Neue", sans-serif;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .paper {
+      position: relative;
+      width: 210mm;
+      height: 297mm;
+      overflow: hidden;
+      padding: 20mm 22mm 18mm;
+      background: var(--paper);
+    }
+    .paper::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 5mm;
+      background: var(--forest);
+    }
+    .paper::after {
+      content: "";
+      position: absolute;
+      width: 72mm;
+      height: 72mm;
+      right: -37mm;
+      top: -30mm;
+      border: 1px solid rgba(185, 138, 66, 0.32);
+      border-radius: 50%;
+    }
+    .paper + .paper { break-before: page; }
+    .masthead {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 6mm;
+      border-bottom: 1px solid var(--rule);
+      color: var(--forest);
+      font-size: 7.5pt;
+      font-weight: 700;
+      letter-spacing: 0.19em;
+      text-transform: uppercase;
+    }
+    .masthead .mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 3mm;
+    }
+    .masthead .mark::before {
+      content: "";
+      display: inline-block;
+      width: 7mm;
+      height: 1px;
+      background: var(--gold);
+    }
+    .intro {
+      position: relative;
+      z-index: 1;
+      padding: 17mm 0 12mm;
+    }
+    h1 {
+      margin: 0;
+      color: var(--forest-dark);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 39pt;
+      font-weight: 400;
+      letter-spacing: -0.045em;
+      line-height: 0.98;
+    }
+    .intro-rule {
+      display: flex;
+      align-items: center;
+      gap: 4mm;
+      margin-top: 7mm;
+      color: var(--gold);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 14pt;
+    }
+    .intro-rule::after {
+      content: "";
+      width: 24mm;
+      height: 1px;
+      background: var(--gold);
+    }
+    .letter {
+      position: relative;
+      z-index: 1;
+      font-size: 10.7pt;
+      line-height: 1.52;
+    }
+    .letter p {
+      margin: 0 0 6.1mm;
+    }
+    .letter .opening {
+      color: var(--forest-dark);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 12pt;
+      line-height: 1.48;
+    }
+    .letter .quote {
+      margin: 7mm 0 7mm 8mm;
+      padding: 1mm 0 1mm 6mm;
+      border-left: 2px solid var(--gold);
+      color: var(--forest);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 11.1pt;
+      line-height: 1.55;
+    }
+    .letter .quiet {
+      color: #3f504b;
+    }
+    .page-two .letter {
+      padding-top: 17mm;
+    }
+    .closing {
+      margin-top: 9mm;
+      padding: 7mm 8mm 6mm;
+      border: 1px solid var(--rule);
+      border-top: 3px solid var(--gold);
+      background: var(--cream);
+    }
+    .closing p:last-child { margin-bottom: 0; }
+    .closing .wish {
+      color: var(--forest);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 11.1pt;
+      font-style: italic;
+      line-height: 1.55;
+    }
+    .signature {
+      margin-top: 10mm;
+      color: var(--forest-dark);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 17pt;
+      line-height: 1.2;
+    }
+    .signature::before {
+      content: "";
+      display: block;
+      width: 18mm;
+      height: 1px;
+      margin-bottom: 4mm;
+      background: var(--gold);
+    }
+    .folio {
+      position: absolute;
+      right: 22mm;
+      bottom: 12mm;
+      color: var(--muted);
+      font-size: 7.5pt;
+      letter-spacing: 0.1em;
+    }
+    .folio strong {
+      color: var(--forest);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <section class="paper page-one">
+    <header class="masthead">
+      <span class="mark">For Uncle</span>
+    </header>
+    <div class="intro">
+      <h1>Thank you.</h1>
+      <div class="intro-rule">✦</div>
+    </div>
+    <main class="letter">
+      <p class="opening">The night before I was to leave, you and Aunt called me in. You didn't ask about school. You didn't ask about work. It wasn't an appraisal. You asked me about me.</p>
+      <p class="quote">“How has life been?” “How was growing up?” “How are you handling adulthood?” “What have you been through?”</p>
+      <p>It wasn't performative. You actually wanted to know, you were actually interested in me. And somewhere in that conversation, the two-week holiday stopped being a holiday.</p>
+      <p>I came to your house as someone staying for a little while. I became a part of something again. I became part of your family.</p>
+      <p>You taught me things, real things. Things don't magically get done, you must do them. That what you do or don't do, matters, and you must own it. That being part of a family means actually showing up. That hiding inside yourself isn't an option. That adulthood isn't just escaping everyone and becoming a recluse.</p>
+      <p>The ultimatums for socialising, and maintaining order in my room, and making sure I always said something. And then there were the other things, the “please” and “thank you” I'd get for ironing your clothes or bringing you a glass of water, it was very foreign to me, gave me a sense that I was actually useful.</p>
+      <p class="quiet">You could intimidate an entire room, you have palms the size of shovels, but you've somehow chosen to make people laugh instead.</p>
+    </main>
+    <div class="folio"><strong>01</strong> / 02</div>
+  </section>
+
+  <section class="paper page-two">
+    <header class="masthead">
+      <span class="mark">For Uncle</span>
+    </header>
+    <main class="letter">
+      <p>I don't think I ever properly said thank you. I don't know if I'll ever be able to adequately show how truly grateful I am. I came here thinking I was just coming for two weeks. Instead, I found myself becoming part of a family. You gave me structure and you taught me responsibility. You held me accountable and called me out on my bullshit. You're currently wrangling me out of my shell (I hope I get to come out sufficiently enough soon). You made me participate and included me in discussions.</p>
+      <p>And without making any huge announcement about it, you gave me something I had spent a long time trying to run away from.</p>
+      <p>You let me be someone's kid again. For that, I will always be grateful.</p>
+      <div class="closing">
+        <p>I hope this next year gives you more of the good things you've given the people around you. I pray you live for as long as you want, and never want for as long as you live.</p>
+        <p class="wish">Good health. Peace. Laughter. Family. Plenty of reasons to smile. And absolutely no shortage of people available for you to bully at the dining table.</p>
+        <p class="signature">Happy Birthday, Uncle. Thank you for letting a holiday become home.</p>
+      </div>
+    </main>
+    <div class="folio"><strong>02</strong> / 02</div>
+  </section>
+</body>
+</html>
