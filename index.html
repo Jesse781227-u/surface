@@ -1152,26 +1152,100 @@ body{
   var audioContext = null;
   var awaitingUnmute = false;
   var interactionEvents = ['scroll', 'pointerdown', 'touchstart', 'click', 'keydown', 'wheel'];
+  var audioEventNames = ['loadstart', 'loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough', 'playing', 'pause', 'waiting', 'stalled', 'suspend', 'abort', 'emptied', 'error'];
+
+  function describeAudioError(error){
+    if(!error) return null;
+    return {
+      name: error.name || null,
+      message: error.message || String(error),
+      code: error.code || null
+    };
+  }
+  function getAudioDiagnostics(extra){
+    var mediaError = birthdayAudio.error;
+    var details = {
+      currentSrc: birthdayAudio.currentSrc || null,
+      readyState: birthdayAudio.readyState,
+      networkState: birthdayAudio.networkState,
+      paused: birthdayAudio.paused,
+      muted: birthdayAudio.muted,
+      autoplay: birthdayAudio.autoplay,
+      duration: isFinite(birthdayAudio.duration) ? birthdayAudio.duration : null,
+      currentTime: birthdayAudio.currentTime,
+      visibilityState: document.visibilityState,
+      canPlayMP3: birthdayAudio.canPlayType('audio/mpeg'),
+      canPlayMP4: birthdayAudio.canPlayType('audio/mp4; codecs="mp4a.40.2"'),
+      userActivation: navigator.userActivation ? {
+        isActive: navigator.userActivation.isActive,
+        hasBeenActive: navigator.userActivation.hasBeenActive
+      } : null,
+      mediaError: mediaError ? {
+        code: mediaError.code,
+        message: mediaError.message || null
+      } : null
+    };
+    if(extra){
+      Object.keys(extra).forEach(function(key){ details[key] = extra[key]; });
+    }
+    return details;
+  }
+  function logAudio(level, eventName, extra){
+    var logger = console[level] || console.log;
+    logger.call(console, '[birthday-audio] ' + eventName, getAudioDiagnostics(extra));
+  }
+  audioEventNames.forEach(function(eventName){
+    birthdayAudio.addEventListener(eventName, function(){
+      logAudio(eventName === 'error' ? 'error' : 'info', 'event:' + eventName);
+    });
+  });
+  logAudio('info', 'initialized', {
+    sources: Array.prototype.map.call(birthdayAudio.querySelectorAll('source'), function(source){
+      return { src: source.src, type: source.type };
+    })
+  });
 
   function removeUnmuteListeners(){
     interactionEvents.forEach(function(eventName){
       document.removeEventListener(eventName, unmuteBirthdayAudio, eventName === 'scroll' || eventName === 'touchstart' || eventName === 'wheel');
     });
   }
+  function playWithLogging(reason){
+    logAudio('info', 'play-attempt', { reason: reason });
+    var attempt;
+    try {
+      attempt = birthdayAudio.play();
+    } catch(error){
+      logAudio('error', 'play-threw', { reason: reason, exception: describeAudioError(error) });
+      return null;
+    }
+    if(attempt && attempt.then){
+      attempt.then(function(){
+        logAudio('info', 'play-resolved', { reason: reason });
+      }).catch(function(error){
+        logAudio('error', 'play-rejected', { reason: reason, exception: describeAudioError(error) });
+      });
+    } else {
+      logAudio('warn', 'play-returned-without-promise', { reason: reason });
+    }
+    return attempt;
+  }
   function unmuteBirthdayAudio(){
     if(!awaitingUnmute && !birthdayAudio.paused && !birthdayAudio.muted) return;
+    logAudio('info', 'interaction-unmute', { interaction: 'first-user-interaction' });
     awaitingUnmute = false;
     birthdayAudio.muted = false;
-    var attempt = birthdayAudio.play();
+    var attempt = playWithLogging('first-interaction-unmute');
     if(attempt && attempt.catch){
       attempt.then(function(){
         soundOn = true;
         removeUnmuteListeners();
-      }).catch(function(){
+      }).catch(function(error){
+        logAudio('error', 'audible-play-rejected', { reason: 'first-interaction-unmute', exception: describeAudioError(error) });
         birthdayAudio.muted = true;
         awaitingUnmute = true;
       });
-    } else {
+    } else if(attempt) {
       soundOn = true;
       removeUnmuteListeners();
     }
@@ -1184,28 +1258,45 @@ body{
   });
   function startBirthdayAudio(){
     birthdayAudio.muted = false;
-    var attempt = birthdayAudio.play();
+    var attempt = playWithLogging('page-load-audible');
     if(attempt && attempt.catch){
       attempt.then(function(){
         soundOn = true;
         removeUnmuteListeners();
-      }).catch(function(){
+      }).catch(function(error){
+        logAudio('error', 'audible-play-rejected', { reason: 'page-load-audible', exception: describeAudioError(error) });
         birthdayAudio.muted = true;
         awaitingUnmute = true;
-        var mutedAttempt = birthdayAudio.play();
+        var mutedAttempt = playWithLogging('muted-autoplay-fallback');
         if(mutedAttempt && mutedAttempt.catch){
-          mutedAttempt.then(function(){ soundOn = false; }).catch(function(){ soundOn = false; });
+          mutedAttempt.then(function(){
+            logAudio('info', 'muted-fallback-playing');
+            soundOn = false;
+          }).catch(function(error){
+            logAudio('error', 'muted-fallback-rejected', { exception: describeAudioError(error) });
+            soundOn = false;
+          });
+        } else if(mutedAttempt) {
+          logAudio('info', 'muted-fallback-playing');
+          soundOn = false;
         } else {
+          logAudio('error', 'muted-fallback-unavailable');
           soundOn = false;
         }
       });
-    } else {
+    } else if(attempt) {
       soundOn = true;
       removeUnmuteListeners();
     }
   }
-  birthdayAudio.addEventListener('play', function(){ soundOn = !birthdayAudio.muted; });
-  birthdayAudio.addEventListener('pause', function(){ soundOn = false; });
+  birthdayAudio.addEventListener('play', function(){
+    soundOn = !birthdayAudio.muted;
+    logAudio('info', 'event:play-state', { soundOn: soundOn });
+  });
+  birthdayAudio.addEventListener('pause', function(){
+    soundOn = false;
+    logAudio('info', 'event:pause-state');
+  });
   startBirthdayAudio();
   function playExtinguishSound(){
     if(!soundOn) return;
